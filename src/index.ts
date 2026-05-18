@@ -1,5 +1,5 @@
-const {createLogger} = require('./logger.js')
-const config = require('./config.js')
+import { createLogger } from './logger.js';
+import { config } from './config.js';
 
 const logger = createLogger()
 

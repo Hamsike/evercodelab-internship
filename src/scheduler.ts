@@ -1,16 +1,9 @@
-const { createLogger } = require('./src/logger.js');
+import { createLogger } from "./logger"
 
 const logger = createLogger()
-const tasks = new Map();
+const tasks = new Map<string, {id: NodeJS.Timeout}>();
 
-/**
- * Управление периодическими задачами
- * @param {string} name - Название задачи
- * @param {number} interval - Интервал запуска в миллисекундах
- * @param {Function} task - Функция для выполнения
- */
-
-function scheduleTask(name, interval, task) {
+function scheduleTask(name: string, interval: number, task: () => void) {
   if (tasks.has(name)) {
     logger.warn('Task "' + name + '" already running, restarting');
     clearInterval(tasks.get(name).id);
@@ -22,7 +15,7 @@ function scheduleTask(name, interval, task) {
     task()
    }, interval)
 
-   tasks.set(name, {id, interval})
+   tasks.set(name, {id})
 }
 
 scheduleTask('running-logger', 10000, () => {
