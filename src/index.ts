@@ -1,9 +1,16 @@
-import { createLogger } from './logger.js';
-import { config } from './config.js';
+import { startDemoTask, setupGracefulShutdown } from './controllers/taskController.js'
+import { createLogger } from './utils/logger.js'
+import { config } from './utils/config.js'
 
 const logger = createLogger()
 
-logger.info('=== Application Started ===');
-logger.info('App: ' + config.appName);
-logger.info('Version: ' + config.version);
-logger.info('Environment: ' + config.environment);
+function main() {
+  logger.info(`Starting ${config.appName} v${config.version}`)
+
+  startDemoTask()
+  setupGracefulShutdown()
+
+  logger.info('Application ready, press Ctrl+C to stop')
+}
+
+main()

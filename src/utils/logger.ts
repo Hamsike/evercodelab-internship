@@ -1,4 +1,4 @@
-import { config } from "./config";
+import { config } from "./config.js";
 
 function formatMessage(level: string, message: string): string {
   const timestamp = new Date().toISOString();

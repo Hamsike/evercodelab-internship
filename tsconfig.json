@@ -2,14 +2,14 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "esnext",
-    "outDir": "dist",
-    "rootDir": ".",
+    "outDir": "./dist",
+    "rootDir": "./",
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowJs": true,
     "declaration": true,
-    "types": ["node"]
+    "types": ["node"],
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
