@@ -6,35 +6,35 @@ describe('TaskService', () => {
   })
 
   describe('scheduleTask', () => {
-    it('should schedule a task successfully', () => {
+    test('should schedule a task successfully', () => {
       const task = scheduleTask('test-task', 1000, () => {})
       expect(task.name).toBe('test-task')
       expect(task.interval).toBe(1000)
       expect(task.isRunning).toBe(true)
     })
 
-    it('should throw error for empty name', () => {
+    test('should throw error for empty name', () => {
       expect(() => scheduleTask('', 1000, () => {}))
         .toThrow('Task name must be a non-empty string')
     })
 
-    it('should throw error for negative interval', () => {
+    test('should throw error for negative interval', () => {
       expect(() => scheduleTask('test', -100, () => {}))
         .toThrow('Interval must be a positive number')
     })
 
-    it('should throw error for zero interval', () => {
+    test('should throw error for zero interval', () => {
       expect(() => scheduleTask('test', 0, () => {}))
         .toThrow('Interval must be a positive number')
     })
 
-    it('should throw ConflictError for duplicate task', () => {
+    test('should throw ConflictError for duplicate task', () => {
       scheduleTask('duplicate', 1000, () => {})
       expect(() => scheduleTask('duplicate', 1000, () => {}))
         .toThrow()
     })
 
-    it('should execute task function on interval', async () => {
+    test('should execute task function on interval', async () => {
       let counter = 0
       const taskFn = () => { counter++ }
       
@@ -47,20 +47,20 @@ describe('TaskService', () => {
   })
 
   describe('stopTask', () => {
-    it('should stop existing task and return true', () => {
+    test('should stop existing task and return true', () => {
       scheduleTask('stop-test', 1000, () => {})
       const result = stopTask('stop-test')
       expect(result).toBe(true)
     })
 
-    it('should throw NotFoundError for non-existing task', () => {
+    test('should throw NotFoundError for non-existing task', () => {
       expect(() => stopTask('non-existing'))
         .toThrow()
     })
   })
 
   describe('stopAllTasks', () => {
-    it('should stop all tasks and return count', () => {
+    test('should stop all tasks and return count', () => {
       scheduleTask('task1', 1000, () => {})
       scheduleTask('task2', 2000, () => {})
       scheduleTask('task3', 3000, () => {})
@@ -70,14 +70,14 @@ describe('TaskService', () => {
       expect(listTasks()).toHaveLength(0)
     })
 
-    it('should return 0 when no tasks', () => {
+    test('should return 0 when no tasks', () => {
       const count = stopAllTasks()
       expect(count).toBe(0)
     })
   })
 
   describe('listTasks', () => {
-    it('should return list of running tasks', () => {
+    test('should return list of running tasks', () => {
       scheduleTask('list-task1', 1000, () => {})
       scheduleTask('list-task2', 2000, () => {})
       
@@ -88,12 +88,12 @@ describe('TaskService', () => {
       expect(tasks[0].isRunning).toBe(true)
     })
 
-    it('should return empty array when no tasks', () => {
+    test('should return empty array when no tasks', () => {
       const tasks = listTasks()
       expect(tasks).toHaveLength(0)
     })
 
-    it('should update list after stopping tasks', () => {
+    test('should update list after stopping tasks', () => {
       scheduleTask('to-stop', 1000, () => {})
       scheduleTask('to-keep', 1000, () => {})
       

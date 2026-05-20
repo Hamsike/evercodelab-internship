@@ -17,7 +17,7 @@ describe('Logger', () => {
   })
 
   describe('createLogger', () => {
-    it('should create logger with all methods', () => {
+    test('should create logger with all methods', () => {
       const logger = createLogger()
       expect(logger).toHaveProperty('info')
       expect(logger).toHaveProperty('error')
@@ -28,7 +28,7 @@ describe('Logger', () => {
       expect(logger).toHaveProperty('logError')
     })
 
-    it('should create logger with context prefix', () => {
+    test('should create logger with context prefix', () => {
       const logger = createLogger('TestContext')
       logger.info('Hello world')
       expect(logOutput).toContain('TestContext')
@@ -37,21 +37,21 @@ describe('Logger', () => {
   })
 
   describe('log levels', () => {
-    it('should log info messages', () => {
+    test('should log info messages', () => {
       const logger = createLogger()
       logger.info('Info message')
       expect(logOutput).toContain('[INFO]')
       expect(logOutput).toContain('Info message')
     })
 
-    it('should log error messages', () => {
+    test('should log error messages', () => {
       const logger = createLogger()
       logger.error('Error message')
       expect(logOutput).toContain('[ERROR]')
       expect(logOutput).toContain('Error message')
     })
 
-    it('should log warn messages', () => {
+    test('should log warn messages', () => {
       const logger = createLogger()
       logger.warn('Warn message')
       expect(logOutput).toContain('[WARN]')
@@ -60,14 +60,14 @@ describe('Logger', () => {
   })
 
   describe('requestId', () => {
-    it('should include requestId when provided', () => {
+    test('should include requestId when provided', () => {
       const logger = createLogger()
       logger.info('Test message', 'req-123')
       expect(logOutput).toContain('[req-123]')
       expect(logOutput).toContain('Test message')
     })
 
-    it('should work without requestId', () => {
+    test('should work without requestId', () => {
       const logger = createLogger()
       logger.info('Test message')
       expect(logOutput).not.toContain('[undefined]')
@@ -76,7 +76,7 @@ describe('Logger', () => {
   })
 
   describe('child logger', () => {
-    it('should create child logger with extended prefix', () => {
+    test('should create child logger with extended prefix', () => {
       const parent = createLogger('Parent')
       const child = parent.child('Child')
       child.info('Message from child')
@@ -84,7 +84,7 @@ describe('Logger', () => {
       expect(logOutput).toContain('Message from child')
     })
 
-    it('should create nested child loggers', () => {
+    test('should create nested child loggers', () => {
       const parent = createLogger('Parent')
       const child = parent.child('Child')
       const grandChild = child.child('GrandChild')
@@ -95,7 +95,7 @@ describe('Logger', () => {
   })
 
   describe('logError', () => {
-    it('should log Error object with stack trace', () => {
+    test('should log Error object with stack trace', () => {
       const logger = createLogger()
       const error = new Error('Test error')
       logger.logError(error, 'context info')
@@ -104,13 +104,13 @@ describe('Logger', () => {
       expect(logOutput).toContain('Stack:')
     })
 
-    it('should log string error', () => {
+    test('should log string error', () => {
       const logger = createLogger()
       logger.logError('String error message')
       expect(logOutput).toContain('String error message')
     })
 
-    it('should work with requestId', () => {
+    test('should work with requestId', () => {
       const logger = createLogger()
       const error = new Error('Test error')
       logger.logError(error, 'context', 'req-456')
