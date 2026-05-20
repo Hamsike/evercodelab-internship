@@ -1,4 +1,4 @@
-import { config } from './config.js'
+import { appConfig } from './config'
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'trace'
 
@@ -10,7 +10,7 @@ const LOG_LEVELS: Record<LogLevel, number> = {
   trace: 4
 }
 
-const currentLevel = LOG_LEVELS[config.logLevel as LogLevel] ?? LOG_LEVELS.info
+const currentLevel = LOG_LEVELS[appConfig.logLevel as LogLevel] ?? LOG_LEVELS.info
 
 function shouldLog(level: LogLevel): boolean {
   return LOG_LEVELS[level] <= currentLevel
@@ -19,7 +19,7 @@ function shouldLog(level: LogLevel): boolean {
 function formatMessage(level: LogLevel, message: string, requestId?: string): string {
   const timestamp = new Date().toISOString()
   const rid = requestId ? ` [${requestId}]` : ''
-  return `[${timestamp}]${rid} [${config.appName}] [${level.toUpperCase()}]: ${message}`
+  return `[${timestamp}]${rid} [${appConfig.appName}] [${level.toUpperCase()}]: ${message}`
 }
 
 export interface Logger {
@@ -35,9 +35,9 @@ export interface Logger {
 export function createLogger(prefix?: string): Logger {
   const log = (level: LogLevel, msg: string, requestId?: string) => {
     if (!shouldLog(level)) return
-    
+
     const formatted = formatMessage(level, prefix ? `[${prefix}] ${msg}` : msg, requestId)
-    
+
     switch (level) {
       case 'error': console.error(formatted); break
       case 'warn': console.warn(formatted); break
@@ -53,14 +53,14 @@ export function createLogger(prefix?: string): Logger {
     info: (msg, requestId) => log('info', msg, requestId),
     debug: (msg, requestId) => log('debug', msg, requestId),
     trace: (msg, requestId) => log('trace', msg, requestId),
-    
+
     logError: (err, context, requestId) => {
-      const msg = err instanceof Error 
+      const msg = err instanceof Error
         ? `${context ? context + ' - ' : ''}${err.message}\nStack: ${err.stack}`
         : String(err)
       log('error', msg, requestId)
     },
-    
+
     child: (prefixName) => createLogger(prefix ? `${prefix}.${prefixName}` : prefixName)
   }
 }

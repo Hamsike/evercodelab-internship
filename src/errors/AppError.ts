@@ -1,20 +1,19 @@
-import { BaseError } from './BaseError.js'
-
+import { BaseError } from './BaseError'
 
 export class ValidationError extends BaseError {
   constructor(message: string, context?: unknown) {
-    super(message, context, 400)
+    super(message, 400, context)
   }
 }
 
 export class NotFoundError extends BaseError {
   constructor(resource: string, context?: unknown) {
-    super(`${resource} not found`, context, 404)
+    super(`${resource} not found`, 404, context)
   }
 }
 
 export class ConflictError extends BaseError {
   constructor(resource: string, context?: unknown) {
-    super(`${resource} already exists`,context, 409)
+    super(`${resource} already exists`, 409, context)
   }
 }

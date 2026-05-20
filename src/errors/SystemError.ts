@@ -1,4 +1,4 @@
-import { BaseError } from './BaseError.js'
+import { BaseError } from './BaseError'
 
 export class SystemError extends BaseError {
   public readonly code: string
@@ -6,7 +6,7 @@ export class SystemError extends BaseError {
   public readonly path?: string
 
   constructor(code: string, message: string, syscall?: string, path?: string) {
-    super(`[${code}] ${message}`, { syscall, path })
+    super(`[${code}] ${message}`, 500, { syscall, path })
     this.code = code
     this.syscall = syscall
     this.path = path

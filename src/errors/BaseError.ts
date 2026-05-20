@@ -3,7 +3,7 @@ export class BaseError extends Error {
   public readonly context?: unknown
   public readonly statusCode: number
 
-  constructor(message: string, context?: unknown, statusCode: number = 500) {
+  constructor(message: string, statusCode: number = 500, context?: unknown) {
     super(message)
     this.name = this.constructor.name
     this.statusCode = statusCode

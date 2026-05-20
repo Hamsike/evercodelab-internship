@@ -1,6 +1,6 @@
-import { BaseError } from '../errors/BaseError.js'
-import { scheduleTask, stopAllTasks, stopTask } from '../services/taskService.js'
-import { createLogger } from '../utils/logger.js'
+import { BaseError } from '../errors/index'
+import { scheduleTask, stopAllTasks, stopTask } from '../services/taskService'
+import { createLogger } from '../utils/logger'
 
 const logger = createLogger('TaskController')
 
