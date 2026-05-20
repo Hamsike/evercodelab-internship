@@ -8,7 +8,9 @@
     "start": "node dist/src/index.js",
     "test:all": "jest",
     "test:logger": "jest logger.test.ts",
-    "test:taskService": "jest taskService.test.ts"
+    "test:taskService": "jest taskService.test.ts",
+    "test:server": "jest server.test.ts",
+    "test:routes:status": "jest routes/status.test.ts"
   },
   "repository": {
     "type": "git",
@@ -22,12 +24,18 @@
   },
   "homepage": "https://github.com/Hamsike/evercodelab-internship#readme",
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.0",
+    "@types/node": "^25.9.1",
+    "@types/supertest": "^7.2.0",
     "jest": "^30.4.2",
     "rimraf": "^6.1.3",
+    "supertest": "^7.2.2",
     "ts-jest": "^29.4.10",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }

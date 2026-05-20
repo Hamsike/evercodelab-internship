@@ -1,4 +1,4 @@
-import { createLogger } from '../src/utils/logger'
+import { createLogger } from '../../src/utils/logger'
 
 describe('Logger', () => {
   let logOutput = ''

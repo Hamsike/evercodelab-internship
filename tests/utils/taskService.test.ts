@@ -1,4 +1,4 @@
-import { scheduleTask, stopTask, stopAllTasks, listTasks } from '../src/services/taskService'
+import { scheduleTask, stopTask, stopAllTasks, listTasks } from '../../src/services/taskService'
 
 describe('TaskService', () => {
   beforeEach(() => {
