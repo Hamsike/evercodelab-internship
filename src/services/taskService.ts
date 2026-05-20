@@ -1,8 +1,7 @@
-import { NotFoundError } from '../errors/index.js'
-import { ConflictError } from '../errors/index.js'
+import { NotFoundError, ConflictError } from '../errors/index.js'
 import { createLogger } from '../utils/logger.js'
 
-const logger = createLogger()
+const logger = createLogger('TaskService')
 const tasks = new Map<string, NodeJS.Timeout>()
 
 export interface Task {
@@ -19,14 +18,13 @@ export function scheduleTask(name: string, interval: number, task: () => void): 
   const id = setInterval(() => {
     try {
       task()
-    }
-    catch (err) {
-      logger.error(`Task "${name}" execution failed`)
+    } catch (err) {
+      logger.error(`Task "${name}" execution failed`, 'scheduleTask')
     }
   }, interval)
 
   tasks.set(name, id)
-  logger.info(`Task "${name}" scheduled every ${interval}ms`)
+  logger.info(`Task "${name}" scheduled every ${interval}ms`, 'scheduleTask')
 
   return { name, interval, isRunning: true }
 }
@@ -35,21 +33,23 @@ export function stopTask(name: string): boolean {
   if (!tasks.has(name)) {
     throw new NotFoundError(`Task "${name}"`, { name })
   }
-  const id = tasks.get(name)
+  const id = tasks.get(name)!
   
   clearInterval(id)
   tasks.delete(name)
-  logger.info(`Task "${name}" stopped`)
+  logger.info(`Task "${name}" stopped`, 'stopTask')
   return true
 }
 
 export function stopAllTasks(): number {
   let count = 0
-  for (const [name] of tasks) {
-    stopTask(name)
+  for (const [name, id] of tasks) {
+    clearInterval(id)
+    tasks.delete(name)
+    logger.info(`Task "${name}" stopped`, 'stopAllTasks')
     count++
   }
-  logger.info(`Stopped ${count} tasks`)
+  logger.info(`Stopped ${count} tasks`, 'stopAllTasks')
   return count
 }
 
@@ -60,3 +60,4 @@ export function listTasks(): Task[] {
     isRunning: true
   }))
 }
+
