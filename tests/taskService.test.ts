@@ -5,6 +5,12 @@ describe('TaskService', () => {
     stopAllTasks()
   })
 
+  afterEach(() => {
+    stopAllTasks()
+    jest.clearAllTimers()
+    jest.useRealTimers()
+  })
+
   describe('scheduleTask', () => {
     test('should schedule a task successfully', () => {
       const task = scheduleTask('test-task', 1000, () => {})

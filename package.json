@@ -6,7 +6,9 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node dist/src/index.js",
-    "test": "jest"
+    "test:all": "jest",
+    "test:logger": "jest logger.test.ts",
+    "test:taskService": "jest taskService.test.ts"
   },
   "repository": {
     "type": "git",
