@@ -1,5 +1,5 @@
-import { NotFoundError, ConflictError, ValidationError } from '../errors/index'
-import { createLogger } from '../utils/logger'
+import { NotFoundError, ConflictError, ValidationError } from '../errors/index.js'
+import { createLogger } from '../utils/logger.js'
 
 const logger = createLogger('TaskService')
 const tasks = new Map<string, NodeJS.Timeout>()

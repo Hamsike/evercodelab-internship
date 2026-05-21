@@ -1,11 +1,12 @@
 {
   "name": "evercodelab-internship",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "test:all": "jest",
     "test:logger": "jest logger.test.ts",
     "test:taskService": "jest taskService.test.ts",

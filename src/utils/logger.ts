@@ -1,4 +1,4 @@
-import { appConfig } from './config'
+import { appConfig } from './config.js'
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'trace'
 

@@ -1,7 +1,6 @@
-import { startDemoTask, setupGracefulShutdown } from './controllers/taskController'
-import { createLogger } from './utils/logger'
-import { appConfig } from './utils/config'
-import { startServer } from './server'
+import { createLogger } from './utils/logger.js'
+import { appConfig } from './utils/config.js'
+import { startServer } from './server.js'
 
 const logger = createLogger('Main')
 

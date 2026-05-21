@@ -1,4 +1,4 @@
-import { BaseError } from './BaseError'
+import { BaseError } from './BaseError.js'
 
 export class SystemError extends BaseError {
   public readonly code: string

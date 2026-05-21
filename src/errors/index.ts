@@ -1,4 +1,4 @@
-export { BaseError } from './BaseError'
-export { ValidationError, NotFoundError, ConflictError } from './AppError'
-export { SystemError, ENOENTError, EACCESError } from './SystemError'
-export { AssertionError } from './AssertionError'
+export { BaseError } from './BaseError.js'
+export { ValidationError, NotFoundError, ConflictError } from './AppError.js'
+export { SystemError, ENOENTError, EACCESError } from './SystemError.js'
+export { AssertionError } from './AssertionError.js'

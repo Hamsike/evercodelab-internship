@@ -1,6 +1,6 @@
 import express from 'express'
-import { createLogger } from './utils/logger'
-import routerRoot from './routes'
+import { createLogger } from './utils/logger.js'
+import routerRoot from './routes/index.js'
 
 const app = express()
 const PORT = process.env.PORT ?? 3000
