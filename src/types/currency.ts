@@ -21,3 +21,16 @@ export interface CreateCurrencyBody {
   name: string
   ticker: string
 }
+
+export interface UpdateCurrencyBody {
+  name: string
+  ticker: string
+}
+
+export interface UpdateCurrencyResponse {
+  currency: Currency
+}
+
+export interface DeleteCurrencyResponse {
+  message: string
+}

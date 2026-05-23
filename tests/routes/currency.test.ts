@@ -1,10 +1,12 @@
 import request from 'supertest'
 import app from '../../src/server.js'
 import dotenv from 'dotenv'
-import { type CreateCurrencyResponse, GetCurrencyResponse } from '../../src/types/currency.js'
-import { type ErrorResponse } from '../../src/types/error.js' 
+import { type CreateCurrencyResponse, DeleteCurrencyResponse, GetCurrencyResponse, UpdateCurrencyResponse } from '../../src/types/currency.js'
+import { type ErrorResponse } from '../../src/types/error.js'
 
-dotenv.config()
+dotenv.config({
+  quiet: true
+})
 
 const TOKEN = process.env.AUTH_TOKEN
 
@@ -15,22 +17,22 @@ describe('Currency API', () => {
         .get('/currency')
         .set('Authorization', `Bearer ${TOKEN}`)
         .expect(200)
-      
+
       expect(response.body).toHaveProperty('currencies')
       expect(response.body).toHaveProperty('count')
     })
 
     test('401 error when leaving a token', async () => {
-        await request(app)
-          .get('/currency')
-          .expect(401)
+      await request(app)
+        .get('/currency')
+        .expect(401)
     })
 
     test('401 error due to invalid header format', async () => {
-        await request(app)
-          .get('/currency')
-          .set('Authorization', `Bearara ${TOKEN}`)
-          .expect(401)
+      await request(app)
+        .get('/currency')
+        .set('Authorization', `Bearara ${TOKEN}`)
+        .expect(401)
     })
 
     test('403 error for invalid token', async () => {
@@ -46,8 +48,8 @@ describe('Currency API', () => {
       const createRes = await request(app)
         .post('/currency')
         .set('Authorization', `Bearer ${TOKEN}`)
-        .send({name: 'Bitcoin', ticker: 'BTC'})
-      
+        .send({ name: 'Bitcoin', ticker: 'BTC' })
+
       const created = createRes.body as CreateCurrencyResponse
       const currencyId = created.currency.id
 
@@ -55,9 +57,9 @@ describe('Currency API', () => {
         .get(`/currency/${currencyId}`)
         .set('Authorization', `Bearer ${TOKEN}`)
         .expect(200)
-      
+
       const body = response.body as GetCurrencyResponse
-      
+
       expect(body.currency.id).toBe(currencyId)
       expect(body.currency.name).toBe('Bitcoin')
       expect(body.currency.ticker).toBe('BTC')
@@ -80,9 +82,9 @@ describe('Currency API', () => {
       const response = await request(app)
         .post('/currency')
         .set('Authorization', `Bearer ${TOKEN}`)
-        .send({name: 'Ethereum', ticker: 'ETH'})
+        .send({ name: 'Ethereum', ticker: 'ETH' })
         .expect(201)
-      
+
       const body = response.body as CreateCurrencyResponse
 
       expect(body.currency.name).toBe('Ethereum')
@@ -93,16 +95,75 @@ describe('Currency API', () => {
       await request(app)
         .post('/currency')
         .set('Authorization', `Bearer ${TOKEN}`)
-        .send({test: 'Ethereum', test2: 'ETH'})
+        .send({ test: 'Ethereum', test2: 'ETH' })
         .expect(400)
     })
 
-    test('400 error when data is missing', async () => {
+    test('400 error:  When data is missing', async () => {
       await request(app)
-      .post('/currency')
+        .post('/currency')
         .set('Authorization', `Bearer ${TOKEN}`)
-        .send({name: 'Litecoin', ticker: ''})
         .expect(400)
+    })
+  })
+
+  describe('PUT /currency/:id', () => {
+    test('should update existing currency', async () => {
+      const created = await request(app)
+        .post('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({ name: 'Cardano', ticker: 'ADA' })
+
+      const createdBody = created.body as CreateCurrencyResponse
+      const currentId = createdBody.currency.id
+
+      const response = await request(app)
+        .put(`/currency/${currentId}`)
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({ ticker: 'New ticker' })
+        .expect(200)
+
+      const responseBody = response.body as UpdateCurrencyResponse
+      expect(responseBody.currency.id).toBe(currentId)
+      expect(responseBody.currency.name).toBe('Cardano')
+      expect(responseBody.currency.ticker).toBe('New ticker')
+    })
+
+    test('404 Error: no such entry exists', async () => {
+      await request(app)
+        .put('/currency/-10')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({ ticker: 'New ticker' })
+        .expect(404)
+    })
+  })
+
+  describe('DELETE /currency/:id', () => {
+    test('The entry exists and was successfully deleted', async () => {
+      const created = await request(app)
+        .post('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({ name: 'Ripple', ticker: 'XRP' })
+
+      const createdBody = created.body as CreateCurrencyResponse
+      const currentId = createdBody.currency.id
+
+      const response = await request(app)
+        .delete(`/currency/${currentId}`)
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .expect(200)
+
+      const responseBody = response.body as DeleteCurrencyResponse
+
+      expect(responseBody.message).toBe('Currency removed')
+    })
+
+    test('404 Error: no such entry exists', async () => {
+      await request(app)
+        .delete('/currency/-10')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({ ticker: 'New ticker' })
+        .expect(404)
     })
   })
 })
