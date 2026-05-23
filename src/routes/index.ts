@@ -1,8 +1,10 @@
-import router from "./status.js";
+import routerStatus from "./status.js";
+import routerCurrency from "./currency.js";
 import { Router } from "express";
 
 const routerRoot = Router()
 
-routerRoot.use(router)
+routerRoot.use('/status', routerStatus)
+routerRoot.use('/currency', routerCurrency)
 
 export default routerRoot

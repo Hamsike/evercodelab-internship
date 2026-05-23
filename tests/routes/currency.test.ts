@@ -1,0 +1,108 @@
+import request from 'supertest'
+import app from '../../src/server.js'
+import dotenv from 'dotenv'
+import { type CreateCurrencyResponse, GetCurrencyResponse } from '../../src/types/currency.js'
+import { type ErrorResponse } from '../../src/types/error.js' 
+
+dotenv.config()
+
+const TOKEN = process.env.AUTH_TOKEN
+
+describe('Currency API', () => {
+  describe('GET /currency', () => {
+    test('Gets a list of currencies if the token is valid', async () => {
+      const response = await request(app)
+        .get('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .expect(200)
+      
+      expect(response.body).toHaveProperty('currencies')
+      expect(response.body).toHaveProperty('count')
+    })
+
+    test('401 error when leaving a token', async () => {
+        await request(app)
+          .get('/currency')
+          .expect(401)
+    })
+
+    test('401 error due to invalid header format', async () => {
+        await request(app)
+          .get('/currency')
+          .set('Authorization', `Bearara ${TOKEN}`)
+          .expect(401)
+    })
+
+    test('403 error for invalid token', async () => {
+      await request(app)
+        .get('/currency')
+        .set('Authorization', `Bearer invalid_token`)
+        .expect(403)
+    })
+  })
+
+  describe('GET /currency:id', () => {
+    test('Returns currency by id', async () => {
+      const createRes = await request(app)
+        .post('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({name: 'Bitcoin', ticker: 'BTC'})
+      
+      const created = createRes.body as CreateCurrencyResponse
+      const currencyId = created.currency.id
+
+      const response = await request(app)
+        .get(`/currency/${currencyId}`)
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .expect(200)
+      
+      const body = response.body as GetCurrencyResponse
+      
+      expect(body.currency.id).toBe(currencyId)
+      expect(body.currency.name).toBe('Bitcoin')
+      expect(body.currency.ticker).toBe('BTC')
+    })
+
+    test('404 error for non-existent id', async () => {
+      const response = await request(app)
+        .get(`/currency/${404}`)
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .expect(404)
+
+      const body = response.body as ErrorResponse
+      expect(body.error).toBe('Not Found')
+      expect(body.message).toBe('Currency not found')
+    })
+  })
+
+  describe('POST /currency', () => {
+    test('creates a currency with valid data', async () => {
+      const response = await request(app)
+        .post('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({name: 'Ethereum', ticker: 'ETH'})
+        .expect(201)
+      
+      const body = response.body as CreateCurrencyResponse
+
+      expect(body.currency.name).toBe('Ethereum')
+      expect(body.currency.ticker).toBe('ETH')
+    })
+
+    test('400 Error: Data format is invalid', async () => {
+      await request(app)
+        .post('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({test: 'Ethereum', test2: 'ETH'})
+        .expect(400)
+    })
+
+    test('400 error when data is missing', async () => {
+      await request(app)
+      .post('/currency')
+        .set('Authorization', `Bearer ${TOKEN}`)
+        .send({name: 'Litecoin', ticker: ''})
+        .expect(400)
+    })
+  })
+})

@@ -5,13 +5,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "start": "node dist/index.js",
     "test:all": "jest",
     "test:logger": "jest logger.test.ts",
     "test:taskService": "jest taskService.test.ts",
     "test:server": "jest server.test.ts",
-    "test:routes:status": "jest routes/status.test.ts"
+    "test:routes:status": "jest routes/status.test.ts",
+    "test:routes:currency": "jest routes/currency.test.ts"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.2.1"
   }
 }
