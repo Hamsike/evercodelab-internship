@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
 import { ErrorResponse } from '../types/error.js'
 
 export const authMiddleware = (req: Request, res: Response<ErrorResponse>, next: NextFunction) => {
@@ -11,14 +12,16 @@ export const authMiddleware = (req: Request, res: Response<ErrorResponse>, next:
     })
   }
 
-  const curToken = authHeader.split(' ')[1]
-  const VALID_TOKEN = process.env.AUTH_TOKEN
-  
-  if (curToken !== VALID_TOKEN) {
+  const token = authHeader.split(' ')[1]
+  const JWT_SECRET = process.env.JWT_SECRET
+
+  try {
+    jwt.verify(token, JWT_SECRET)
+    next()
+  } catch (err) {
     return res.status(403).json({
       error: 'Forbidden',
-      message: "Invalid authorization token"
+      message: 'Invalid or expired authorization token'
     })
   }
-  next()
 }
