@@ -140,7 +140,7 @@ describe('Currency API', () => {
       const responseBody = response.body as UpdateCurrencyResponse
       expect(responseBody.currency.id).toBe(currentId)
       expect(responseBody.currency.name).toBe('Cardano')
-      expect(responseBody.currency.ticker).toBe('New ticker')
+      expect(responseBody.currency.ticker).toBe('New ticker'.toUpperCase())
     })
 
     test('404 Error: no such entry exists', async () => {
