@@ -1,0 +1,277 @@
+openapi: 3.0.0
+info:
+  title: EvercodeLab Internship API
+  version: 1.0.0
+  description: API для управления валютами и получения курсов из Binance
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Currency:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        name:
+          type: string
+          example: Bitcoin
+        ticker:
+          type: string
+          example: BTC
+
+    GetCurrenciesResponse:
+      type: object
+      properties:
+        currencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Currency'
+        count:
+          type: number
+
+    GetCurrencyResponse:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+
+    CreateCurrencyBody:
+      type: object
+      required:
+        - name
+        - ticker
+      properties:
+        name:
+          type: string
+          example: Ethereum
+        ticker:
+          type: string
+          example: ETH
+
+    CreateCurrencyResponse:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+
+    UpdateCurrencyBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Ethereum Classic
+        ticker:
+          type: string
+          example: ETC
+
+    UpdateCurrencyResponse:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+
+    DeleteCurrencyResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    PriceQuery:
+      type: object
+      properties:
+        currency:
+          type: string
+          example: BTC
+
+    PriceResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        pairs:
+          type: array
+          items:
+            type: object
+            properties:
+              symbol:
+                type: string
+              price:
+                type: string
+        count:
+          type: number
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+security:
+  - bearerAuth: []
+
+paths:
+  /status:
+    get:
+      summary: Проверка работы сервера
+      security: []
+      responses:
+        '200':
+          description: Сервер работает
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ok
+
+  /currency:
+    get:
+      summary: Получить все валюты
+      responses:
+        '200':
+          description: Список валют
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCurrenciesResponse'
+        '401':
+          description: Неавторизован
+        '403':
+          description: Неверный токен
+
+    post:
+      summary: Создать новую валюту
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCurrencyBody'
+      responses:
+        '201':
+          description: Валюта создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCurrencyResponse'
+        '400':
+          description: Неверные данные
+        '401':
+          description: Неавторизован
+        '403':
+          description: Неверный токен
+
+  /currency/{id}:
+    get:
+      summary: Получить валюту по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Валюта найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCurrencyResponse'
+        '401':
+          description: Неавторизован
+        '403':
+          description: Неверный токен
+        '404':
+          description: Валюта не найдена
+
+    put:
+      summary: Обновить валюту
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCurrencyBody'
+      responses:
+        '200':
+          description: Валюта обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCurrencyResponse'
+        '401':
+          description: Неавторизован
+        '403':
+          description: Неверный токен
+        '404':
+          description: Валюта не найдена
+
+    delete:
+      summary: Удалить валюту
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Валюта удалена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCurrencyResponse'
+        '401':
+          description: Неавторизован
+        '403':
+          description: Неверный токен
+        '404':
+          description: Валюта не найдена
+
+  /price:
+    get:
+      summary: Получить курсы из Binance
+      parameters:
+        - name: currency
+          in: query
+          required: true
+          schema:
+            type: string
+            example: BTC
+      responses:
+        '200':
+          description: Список курсов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceResponse'
+        '400':
+          description: Не указан параметр currency
+        '401':
+          description: Неавторизован
+        '403':
+          description: Неверный токен
+        '404':
+          description: Валюта не найдена в базе
+        '502':
+          description: Ошибка Binance API
+          
