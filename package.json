@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/Hamsike/evercodelab-internship#readme",
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
@@ -40,6 +41,7 @@
   },
   "dependencies": {
     "axios": "^1.16.1",
+    "better-sqlite3": "^12.10.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3"

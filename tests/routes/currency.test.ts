@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import { type CreateCurrencyResponse, DeleteCurrencyResponse, GetCurrencyResponse, UpdateCurrencyResponse } from '../../src/types/currency.js'
 import { type ErrorResponse } from '../../src/types/error.js'
 import { generateExpiredToken, generateValidToken } from '../helpers/tokenHelpers.js'
+import { clearCurrenciesTable } from '../helpers/dbHelper.js'
 
 dotenv.config({
   quiet: true
@@ -19,6 +20,10 @@ beforeAll(() => {
 })
 
 describe('Currency API', () => {
+  beforeEach(() => {
+    clearCurrenciesTable()
+  })
+  
   describe('GET /currency', () => {
     test('Gets a list of currencies if the VALID_TOKEN is valid', async () => {
       const response = await request(app)
